@@ -3,6 +3,7 @@ import Home from "./components/Home";
 import Order from "./components/Order";
 import { Routes, Route, Link } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
 
 const emptyFormValues = {
   name: "",
@@ -23,6 +24,12 @@ const App = () => {
   const handleChange = (name, value) => {
     setFormValues({ ...formValues, [name]: value });
   };
+
+  const handleSubmit = (evt) => {
+    axios
+      .post("https://reqres.in/api/orders", formValues)
+      .catch((err) => console.log(err));
+  };
   return (
     <div className="app">
       <h1>Lambda Eats</h1>
@@ -36,7 +43,13 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route
           path="pizza"
-          element={<Order values={formValues} change={handleChange} />}
+          element={
+            <Order
+              values={formValues}
+              change={handleChange}
+              submit={handleSubmit}
+            />
+          }
         />
       </Routes>
     </div>
