@@ -2,8 +2,10 @@ import React from "react";
 import Home from "./components/Home";
 import Order from "./components/Order";
 import { Routes, Route, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import schema from "./schema/schema";
+import * as yup from "yup";
 
 const emptyFormValues = {
   name: "",
@@ -17,18 +19,43 @@ const emptyFormValues = {
   topping7: false,
   special: "",
 };
+const errValues = {
+  name: "",
+  size: "",
+};
 
 const App = () => {
   const [formValues, setFormValues] = useState(emptyFormValues);
+  const [errors, setErrors] = useState(errValues);
 
   const handleChange = (name, value) => {
+    validate(name, value);
     setFormValues({ ...formValues, [name]: value });
   };
+
+  const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const handleSubmit = (evt) => {
     axios
       .post("https://reqres.in/api/orders", formValues)
+      .then(setFormValues(emptyFormValues))
       .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    schema.isValid(formValues).then((valid) => {
+      setButtonDisabled(!valid);
+    });
+  }, [formValues]);
+
+  const validate = (name, value) => {
+    yup
+      .reach(schema, name)
+      .validate(value)
+      .then(() => {
+        setErrors({ ...errors, [name]: "" });
+      })
+      .catch((err) => setErrors({ ...errors, [name]: err.errors[0] }));
   };
   return (
     <div className="app">
@@ -48,6 +75,8 @@ const App = () => {
               values={formValues}
               change={handleChange}
               submit={handleSubmit}
+              disabled={buttonDisabled}
+              errors={errors}
             />
           }
         />

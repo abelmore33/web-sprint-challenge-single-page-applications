@@ -1,8 +1,7 @@
 import React from "react";
-import { useState, useEffect } from "react";
 
 function Order(props) {
-  const { change, submit } = props;
+  const { change, submit, disabled, errors } = props;
   const {
     name,
     size,
@@ -42,6 +41,7 @@ function Order(props) {
             placeholder="Enter Name"
             value={name}
           ></input>
+          <p style={{ color: "red" }}>{errors.name}</p>
         </div>
 
         <div className="pizzaSize">
@@ -59,6 +59,7 @@ function Order(props) {
             <option value="Large">Large</option>
             <option value="Extra Large">Extra Large</option>
           </select>
+          <p style={{ color: "red" }}>{errors.size}</p>
         </div>
         <div className="toppings">
           <h3>Add Toppings</h3>
@@ -140,7 +141,9 @@ function Order(props) {
           ></input>
           <p>May increase price(will call to verify)</p>
         </div>
-        <button id="order-button">Place Order</button>
+        <button disabled={disabled} id="order-button">
+          Place Order
+        </button>
       </form>
     </div>
   );

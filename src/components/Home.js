@@ -1,6 +1,6 @@
 import React from "react";
 import homeImg from "../images/pizza.jpg";
-import { useState } from "react";
+
 function Home() {
   return (
     <div>
